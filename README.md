@@ -21,8 +21,10 @@ Represents the number of nodes closest to a key or node ID, in which `get`, `fin
 In all cases, the distance between two keys/node IDs is `XOR(sha3_256(key1),
 sha3_256(key2))`.
 
+64-character long `SHA-3-256` hexadecimal strings are first converted to an array (`std::array<uint8_t, 32>`) consisting of 32 bytes (`BUCKET_COUNT / 8`) before being used to perform XOR distance calculations.
+
 ### Routing table
-...
+The routing table is a fixed size `std::array` consisting of 256 kbuckets (`std::vector<std::shared_ptr<Node>>`).
 
 ### Hash table
 The hash table is an `std::unordered_map` that stores a `std::string` key representing a SHA-3-256 hash and an `std::string` value containing the JSON value.
@@ -77,7 +79,7 @@ Unlike `put`, `map` stores data in the local database file rather than the in-me
 - [x] Keys/Node IDs
     - represented as SHA-3-256 hashes
 - [x] KBuckets
-    - represented as an unordered_map of <int, std::vector<std::unique_ptr<Node>>>. A max of 256 kbuckets is set, each of them containing up to 20 elements.
+    - represented as an `std::array` of `std::vector<std::shared_ptr<Node>>`. A max of 256 kbuckets is set, each of them containing up to 20 elements.
 - [x] XOR Distance between Keys
 - [x] Basic protocol message types: `ping`, `find_node`, `put` (`store`), and `get` (`find_value`) as well as two additional message types specific to this implementation: `get_providers` and `map`.
 - [x] Periodic node health checks
@@ -93,7 +95,7 @@ Unlike `put`, `map` stores data in the local database file rather than the in-me
     - validates data correctness
 - [x] Data integrity verification
     - verifies data integrity using either **monero** or RSA digital signatures
-- [ ] node IP/i2p address blacklisting
+- [ ] node i2p address blacklisting
 - [x] Expiration dates on certain data
 
 ## Data serialization (examples)
