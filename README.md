@@ -21,10 +21,12 @@ Represents the number of nodes closest to a key or node ID, in which `get`, `fin
 In all cases, the distance between two keys/node IDs is `XOR(sha3_256(key1),
 sha3_256(key2))`.
 
-64-character long `SHA-3-256` hexadecimal strings are first converted to an array (`std::array<uint8_t, 32>`) consisting of 32 bytes (`BUCKET_COUNT / 8`) before being used to perform XOR distance calculations.
+`SHA-3-256` hexadecimal strings are first converted to an array (`std::array<uint8_t, 32>`) consisting of 32 bytes (`BUCKET_COUNT / 8`) which is then used to calculate the distance between two node IDs, using the XOR metric (`a ^ b`).
 
 ### Routing table
-The routing table is a fixed size `std::array` consisting of 256 kbuckets (`std::vector<std::shared_ptr<Node>>`).
+The routing table is a fixed size `std::array` consisting of **256** k-buckets (`std::vector<std::shared_ptr<Node>>`).
+
+> _The number of k-buckets is equal to the number of bits in node IDs and keys. Since we use SHA-3-256, which produces 256-bits, the maximum k-buckets would be 256._
 
 ### Hash table
 The hash table is an `std::unordered_map` that stores a `std::string` key representing a SHA-3-256 hash and an `std::string` value containing the JSON value.
